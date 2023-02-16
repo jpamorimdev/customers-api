@@ -1,0 +1,36 @@
+version: "3"
+
+name: customers-api-prod
+
+networks:
+  customer:
+    driver: bridge
+    ipam:
+      driver: default
+
+services:
+
+  redis:
+    image: redis:7
+    container_name: customers-api-prod-redis
+    networks:
+      - customer
+
+  api:
+    container_name: customers-api-prod-api
+    build:
+      context: ../
+      dockerfile: deploy/Dockerfile
+    restart: always
+    environment:
+      - AUTH_KEYCLOAK_BASE_URL=${AUTH_KEYCLOAK_BASE_URL}
+      - AUTH_KEYCLOAK_REALM=${AUTH_KEYCLOAK_REALM}
+      - CACHE_REDIS_HOST=${CACHE_REDIS_HOST:-redis}
+      - CACHE_REDIS_USERNAME=${CACHE_REDIS_USERNAME}
+      - CACHE_REDIS_PORT=${CACHE_REDIS_PASSWORD}
+      - CACHE_REDIS_PORT=${CACHE_REDIS_PORT:-6379}
+      - CACHE_REDIS_TTL=${CACHE_REDIS_TTL:-0}
+    ports:
+      - "3000:3000"
+    networks:
+      - customer

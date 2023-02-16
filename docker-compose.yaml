@@ -1,0 +1,11 @@
+version: "3"
+
+name: customers-api-dev
+
+services:
+
+  redis:
+    image: redis:7
+    container_name: customers-api-dev-redis
+    ports:
+      - "6379:6379"
